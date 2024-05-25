@@ -1,4 +1,4 @@
-package org.example.deliveryapi
+package org.pocotesteable.deliveryapi
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
@@ -9,5 +9,4 @@ class DeliveryApiApplicationTests {
     @Test
     fun contextLoads() {
     }
-
 }
