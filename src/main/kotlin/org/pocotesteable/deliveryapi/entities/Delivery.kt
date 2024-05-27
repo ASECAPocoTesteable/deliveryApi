@@ -1,13 +1,13 @@
 package org.pocotesteable.deliveryapi.entities
 
 import jakarta.persistence.*
-import java.util.*
 
 @Entity
 data class Delivery(
     var name: String,
+    var isAvailable: Boolean,
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: UUID? = null
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 }

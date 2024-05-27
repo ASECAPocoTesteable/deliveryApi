@@ -27,6 +27,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
     dependencies {
         ktlint("com.pinterest:ktlint:0.49.0") {
             attributes {
