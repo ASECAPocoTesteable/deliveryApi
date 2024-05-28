@@ -16,7 +16,7 @@ class OrderController(private val orderService: OrderService) {
     @PostMapping("/order")
     fun startOrder(@Valid @RequestBody payload: OrderDTO): ResponseEntity<Any> {
         return try {
-            ResponseEntity.ok().body(orderService.startDelivery(payload))
+            ResponseEntity.ok().body(orderService.startOrder(payload))
         } catch (e: Exception) {
             ResponseEntity.badRequest().body("Error: ${e.message}")
         }
@@ -25,7 +25,7 @@ class OrderController(private val orderService: OrderService) {
     @PostMapping("/order/{orderId}/status")
     fun updateOrderStatus(@PathVariable("orderId") orderId: Long, @Valid @RequestBody payload: StatusDTO): ResponseEntity<Any> {
         return try {
-            ResponseEntity.ok().body(orderService.updateDeliveryStatus(orderId, payload))
+            ResponseEntity.ok().body(orderService.updateOrderStatus(orderId, payload))
         } catch (e: Exception) {
             ResponseEntity.badRequest().body("Error: ${e.message}")
         }

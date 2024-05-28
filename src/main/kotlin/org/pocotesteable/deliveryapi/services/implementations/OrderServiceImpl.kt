@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class OrderServiceImpl(val orderRepository: OrderRepository, val productRepository: ProductRepository, val statusRepository: StatusRepository, val deliveryRepository: DeliveryRepository) : OrderService {
-    override fun startDelivery(payload: OrderDTO) {
+    override fun startOrder(payload: OrderDTO) {
         val deliveries = deliveryRepository.getFirstAvailable().orElseThrow { Exception("No available delivery") }
         if (deliveries.isEmpty()) {
             throw Exception("No available delivery")
@@ -40,7 +40,7 @@ class OrderServiceImpl(val orderRepository: OrderRepository, val productReposito
         }
     }
 
-    override fun updateDeliveryStatus(orderId: Long, payload: StatusDTO) {
+    override fun updateOrderStatus(orderId: Long, payload: StatusDTO) {
         val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
         val status = statusRepository.findById(order.status.id).orElseThrow { Exception("Status not found") }
         status.state = payload.status

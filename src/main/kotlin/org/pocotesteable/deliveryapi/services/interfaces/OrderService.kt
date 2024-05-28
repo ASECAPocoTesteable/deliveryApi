@@ -4,7 +4,7 @@ import org.pocotesteable.deliveryapi.controllers.payload.request.OrderDTO
 import org.pocotesteable.deliveryapi.controllers.payload.request.StatusDTO
 
 interface OrderService {
-    fun startDelivery(payload: OrderDTO) {}
+    fun startOrder(payload: OrderDTO) {}
 
-    fun updateDeliveryStatus(orderId: Long, payload: StatusDTO) {}
+    fun updateOrderStatus(orderId: Long, payload: StatusDTO) {}
 }
