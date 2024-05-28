@@ -1,7 +1,6 @@
 package org.pocotesteable.deliveryapi.entities
 
 import jakarta.persistence.*
-import java.util.*
 
 @Entity
 class PurchaseOrder(
@@ -15,6 +14,6 @@ class PurchaseOrder(
 
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: UUID? = null
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 }
