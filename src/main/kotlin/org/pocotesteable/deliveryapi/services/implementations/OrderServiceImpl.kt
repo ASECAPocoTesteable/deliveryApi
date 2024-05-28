@@ -47,4 +47,15 @@ class OrderServiceImpl(val orderRepository: OrderRepository, val productReposito
         status.description = payload.description
         statusRepository.save(status)
     }
+
+    override fun completeOrder(orderId: Long) {
+        updateOrderStatus(orderId, StatusDTO("COMPLETE", "Your order is complete."))
+
+        val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
+        val delivery = order.delivery
+        if (delivery != null) {
+            delivery.isAvailable = true
+            deliveryRepository.save(delivery)
+        }
+    }
 }

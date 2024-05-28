@@ -4,7 +4,7 @@ import jakarta.persistence.*
 
 @Entity
 class PurchaseOrder(
-    @OneToOne
+    @ManyToOne
     var delivery: Delivery? = null,
 
     var userAddress: String,
