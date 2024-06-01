@@ -4,7 +4,6 @@ import jakarta.persistence.*
 
 @Entity
 data class Delivery(
-    var name: String,
     var isAvailable: Boolean,
 ) {
     @Id

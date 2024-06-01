@@ -28,8 +28,8 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
-    implementation ("io.springfox:springfox-boot-starter:3.0.0")
-    implementation ("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
     dependencies {
         ktlint("com.pinterest:ktlint:0.49.0") {
             attributes {

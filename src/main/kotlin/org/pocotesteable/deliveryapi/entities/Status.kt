@@ -1,10 +1,11 @@
 package org.pocotesteable.deliveryapi.entities
 
 import jakarta.persistence.*
+import org.pocotesteable.deliveryapi.enums.State
 
 @Entity
 data class Status(
-    var state: String,
+    var state: State,
 
     var description: String,
 ) {
