@@ -10,5 +10,7 @@ interface OrderService {
 
     fun takeOrder(orderId: Long) {}
 
+    fun haveIncident(orderId: Long) {}
+
     fun completeOrder(orderId: Long) {}
 }

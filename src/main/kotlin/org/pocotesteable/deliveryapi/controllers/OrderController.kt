@@ -40,6 +40,15 @@ class OrderController(private val orderService: OrderService) {
         }
     }
 
+    @PostMapping("/order/{orderId}/incident")
+    fun haveIncident(@PathVariable("orderId") orderId: Long): ResponseEntity<Any> {
+        return try {
+            ResponseEntity.ok().body(orderService.haveIncident(orderId))
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body("Error: ${e.message}")
+        }
+    }
+
     @PostMapping("/order/{orderId}/complete")
     fun completeOrder(@PathVariable("orderId") orderId: Long): ResponseEntity<Any> {
         return try {

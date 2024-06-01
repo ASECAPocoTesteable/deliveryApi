@@ -4,7 +4,7 @@ enum class State(val stateName: String) {
     ASSIGNED("ASSIGNED"),
     INPROGRESS("INPROGRESS"),
     DELIVERED("DELIVERED"),
-    CANCELED("CANCELED"),
+    INCIDENT("INCIDENT"),
     ;
 
     companion object {
