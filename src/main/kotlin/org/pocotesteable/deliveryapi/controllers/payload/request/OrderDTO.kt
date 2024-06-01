@@ -16,6 +16,4 @@ data class ProductWarehouseDTO(
     val product: String,
     @field:Positive(message = "Quantity must be greater than 0")
     val quantity: Int,
-    @field:NotBlank(message = "Warehouse address must not be blank")
-    val warehouseAddress: String,
 )

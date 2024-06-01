@@ -40,7 +40,7 @@ class OrderServiceImpl(
         orderRepository.save(order)
 
         payload.products.map {
-            val product = Product(it.product, it.quantity, it.warehouseAddress, order)
+            val product = Product(it.product, it.quantity, order)
             productRepository.save(product)
             product
         }
@@ -58,6 +58,10 @@ class OrderServiceImpl(
 
     override fun takeOrder(orderId: Long) {
         updateOrderStatus(orderId, StatusDTO("INPROGRESS", "Tu orden esta en progreso de entrega."))
+    }
+
+    override fun haveIncident(orderId: Long) {
+        updateOrderStatus(orderId, StatusDTO("INCIDENT", "El repartidor tuvo un incidente. Se solucionara el problema a la brevedad."))
     }
 
     override fun completeOrder(orderId: Long) {
@@ -78,19 +82,19 @@ class OrderServiceImpl(
             }
 
             State.INPROGRESS -> {
-                if (orderStatus.state == State.INPROGRESS || orderStatus.state == State.CANCELED || orderStatus.state == State.DELIVERED) {
+                if (orderStatus.state == State.INPROGRESS || orderStatus.state == State.DELIVERED) {
                     throw Exception("No se puede cambiar del estado ${orderStatus.state} a $status")
                 }
             }
 
             State.DELIVERED -> {
-                if (orderStatus.state == State.ASSIGNED || orderStatus.state == State.CANCELED || orderStatus.state == State.DELIVERED) {
+                if (orderStatus.state == State.ASSIGNED || orderStatus.state == State.INCIDENT || orderStatus.state == State.DELIVERED) {
                     throw Exception("No se puede cambiar del estado ${orderStatus.state} a $status")
                 }
             }
 
-            State.CANCELED -> {
-                if (orderStatus.state == State.DELIVERED) {
+            State.INCIDENT -> {
+                if (orderStatus.state == State.DELIVERED || orderStatus.state == State.ASSIGNED || orderStatus.state == State.INCIDENT) {
                     throw Exception("No se puede cambiar del estado ${orderStatus.state} a $status")
                 }
             }

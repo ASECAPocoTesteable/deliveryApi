@@ -6,7 +6,6 @@ import jakarta.persistence.*
 data class Product(
     var name: String,
     var quantity: Int,
-    var warehouse_address: String,
     @ManyToOne
     var purchaseOrder: PurchaseOrder,
 ) {
