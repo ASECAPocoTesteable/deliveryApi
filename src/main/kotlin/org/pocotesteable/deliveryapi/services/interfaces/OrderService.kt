@@ -8,5 +8,7 @@ interface OrderService {
 
     fun updateOrderStatus(orderId: Long, payload: StatusDTO) {}
 
+    fun takeOrder(orderId: Long) {}
+
     fun completeOrder(orderId: Long) {}
 }
