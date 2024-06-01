@@ -18,7 +18,7 @@ class OrderServiceImpl(
     val orderRepository: OrderRepository,
     val productRepository: ProductRepository,
     val statusRepository: StatusRepository,
-    val deliveryRepository: DeliveryRepository
+    val deliveryRepository: DeliveryRepository,
 ) : OrderService {
     override fun startOrder(payload: OrderDTO) {
         val deliveries = deliveryRepository.getFirstAvailable().orElseThrow { Exception("No available delivery") }
@@ -50,7 +50,7 @@ class OrderServiceImpl(
         val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
         val status = statusRepository.findById(order.status.id).orElseThrow { Exception("Status not found") }
         val state = State.fromString(payload.status)
-        verifyStatusChange(order, status)
+        verifyStatusChange(status, state)
         status.state = state
         status.description = payload.description
         statusRepository.save(status)
@@ -71,27 +71,27 @@ class OrderServiceImpl(
         }
     }
 
-    private fun verifyStatusChange(order: PurchaseOrder, status: Status) {
-        when (status.state) {
+    private fun verifyStatusChange(orderStatus: Status, status: State) {
+        when (status) {
             State.ASSIGNED -> {
                 throw Exception("No se puede asignar la orden luego de su creación")
             }
 
             State.INPROGRESS -> {
-                if (order.status.state == State.INPROGRESS || order.status.state == State.CANCELED || order.status.state == State.DELIVERED) {
-                    throw Exception("No se puede cambiar del estado ${order.status.state} a ${status.state}")
+                if (orderStatus.state == State.INPROGRESS || orderStatus.state == State.CANCELED || orderStatus.state == State.DELIVERED) {
+                    throw Exception("No se puede cambiar del estado ${orderStatus.state} a $status")
                 }
             }
 
             State.DELIVERED -> {
-                if (order.status.state == State.ASSIGNED || order.status.state == State.CANCELED || order.status.state == State.DELIVERED) {
-                    throw Exception("No se puede cambiar del estado ${order.status.state} a ${status.state}")
+                if (orderStatus.state == State.ASSIGNED || orderStatus.state == State.CANCELED || orderStatus.state == State.DELIVERED) {
+                    throw Exception("No se puede cambiar del estado ${orderStatus.state} a $status")
                 }
             }
 
             State.CANCELED -> {
-                if (order.status.state == State.DELIVERED) {
-                    throw Exception("No se puede cambiar del estado ${order.status.state} a ${status.state}")
+                if (orderStatus.state == State.DELIVERED) {
+                    throw Exception("No se puede cambiar del estado ${orderStatus.state} a $status")
                 }
             }
         }
