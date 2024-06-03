@@ -1,15 +1,15 @@
 package org.pocotesteable.deliveryapi.entities
 
 import jakarta.persistence.*
-import java.util.*
+import org.pocotesteable.deliveryapi.enums.State
 
 @Entity
 data class Status(
-    var state: String,
+    var state: State,
 
     var description: String,
 ) {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    var id: UUID? = null
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 }

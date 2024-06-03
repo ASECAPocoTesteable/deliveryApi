@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id("org.springframework.boot") version "3.2.5"
     id("io.spring.dependency-management") version "1.1.4"
+    id("maven-publish")
     kotlin("jvm") version "1.9.23"
     kotlin("plugin.spring") version "1.9.23"
     kotlin("plugin.jpa") version "1.9.23"
@@ -19,6 +20,24 @@ repositories {
     mavenCentral()
 }
 
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ASECAPocoTesteable/deliveryApi")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        create<MavenPublication>("gpr") { // Create a Maven publication named "gpr"
+            from(components["java"]) // Include the Java component in the publication
+        }
+    }
+}
+
 val ktlint by configurations.creating
 
 dependencies {
@@ -27,6 +46,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.postgresql:postgresql:42.7.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.hibernate.validator:hibernate-validator:8.0.0.Final")
+    implementation("io.springfox:springfox-boot-starter:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     dependencies {
         ktlint("com.pinterest:ktlint:0.49.0") {
             attributes {
@@ -44,6 +67,9 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0") // or a more recent version
+    testImplementation("io.projectreactor:reactor-test")
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 

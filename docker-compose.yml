@@ -1,26 +1,27 @@
 version: '3'
 
 services:
-  postgres:
+  postgres2:
     image: postgres:16
     ports:
-      - "5432:5432"
+      - "5433:5433"
     env_file:
       - .env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - deliveryapi_postgres_data:/var/lib/postgresql/data
 
-  app:
+  deliveryapi:
     image: deliveryapi
+    container_name: deliveryapi
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8082:8082"
     depends_on:
-      - postgres
+      - postgres2
     env_file:
       - .env
 
 volumes:
-  postgres_data:
+  deliveryapi_postgres_data:
