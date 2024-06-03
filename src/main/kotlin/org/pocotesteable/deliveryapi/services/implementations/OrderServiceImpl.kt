@@ -75,7 +75,7 @@ class OrderServiceImpl(
         return controlTowerServiceImpl.notifyIncident(orderId)
             .doOnError { e -> println("Error: ${e.message}") } // print the error message if an error occurs
             .flatMap { success ->
-                if (success.isEmpty()) {
+                if (success == "success") {
                     updateOrderStatus(orderId, StatusDTO("INCIDENT", "El repartidor tuvo un incidente. Se solucionara el problema a la brevedad."))
                     Mono.just(true)
                 } else {
