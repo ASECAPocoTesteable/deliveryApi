@@ -13,6 +13,6 @@ RUN gradle build --no-daemon
 
 WORKDIR /app
 
-EXPOSE 8080
+EXPOSE 8082
 
 CMD ["java", "-jar", "/home/gradle/src/build/libs/deliveryApi-0.0.1-SNAPSHOT.jar"]

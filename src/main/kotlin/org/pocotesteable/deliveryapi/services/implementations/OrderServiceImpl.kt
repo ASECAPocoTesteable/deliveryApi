@@ -2,6 +2,7 @@ package org.pocotesteable.deliveryapi.services.implementations
 
 import org.pocotesteable.deliveryapi.controllers.payload.request.OrderDTO
 import org.pocotesteable.deliveryapi.controllers.payload.request.StatusDTO
+import org.pocotesteable.deliveryapi.controllers.payload.response.OrderedDTO
 import org.pocotesteable.deliveryapi.entities.Product
 import org.pocotesteable.deliveryapi.entities.PurchaseOrder
 import org.pocotesteable.deliveryapi.entities.Status
@@ -12,6 +13,7 @@ import org.pocotesteable.deliveryapi.repositories.ProductRepository
 import org.pocotesteable.deliveryapi.repositories.StatusRepository
 import org.pocotesteable.deliveryapi.services.interfaces.OrderService
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 @Service
 class OrderServiceImpl(
@@ -19,6 +21,7 @@ class OrderServiceImpl(
     val productRepository: ProductRepository,
     val statusRepository: StatusRepository,
     val deliveryRepository: DeliveryRepository,
+    val controlTowerServiceImpl: ControlTowerServiceImpl,
 ) : OrderService {
     override fun startOrder(payload: OrderDTO) {
         val deliveries = deliveryRepository.getFirstAvailable().orElseThrow { Exception("No available delivery") }
@@ -56,12 +59,29 @@ class OrderServiceImpl(
         statusRepository.save(status)
     }
 
-    override fun takeOrder(orderId: Long) {
-        updateOrderStatus(orderId, StatusDTO("INPROGRESS", "Tu orden esta en progreso de entrega."))
+    override fun takeOrder(orderId: Long): Mono<Any> {
+        return controlTowerServiceImpl.notifyDelivery(orderId)
+            .flatMap { success ->
+                if (success.isEmpty()) {
+                    updateOrderStatus(orderId, StatusDTO("INPROGRESS", "Tu orden esta en progreso de entrega."))
+                    Mono.just(true)
+                } else {
+                    Mono.error(Exception("Error al notificar al Control Tower."))
+                }
+            }
     }
 
-    override fun haveIncident(orderId: Long) {
-        updateOrderStatus(orderId, StatusDTO("INCIDENT", "El repartidor tuvo un incidente. Se solucionara el problema a la brevedad."))
+    override fun haveIncident(orderId: Long): Mono<Any> {
+        return controlTowerServiceImpl.notifyIncident(orderId)
+            .doOnError { e -> println("Error: ${e.message}") } // print the error message if an error occurs
+            .flatMap { success ->
+                if (success.isEmpty()) {
+                    updateOrderStatus(orderId, StatusDTO("INCIDENT", "El repartidor tuvo un incidente. Se solucionara el problema a la brevedad."))
+                    Mono.just(true)
+                } else {
+                    Mono.error(Exception("Error al notificar al Control Tower."))
+                }
+            }
     }
 
     override fun completeOrder(orderId: Long) {
@@ -72,6 +92,18 @@ class OrderServiceImpl(
         if (delivery != null) {
             delivery.isAvailable = true
             deliveryRepository.save(delivery)
+        }
+    }
+
+    override fun getOrderByDelivery(deliveryId: Long): List<OrderedDTO> {
+        val delivery = deliveryRepository.findById(deliveryId).orElseThrow { Exception("Delivery not found") }
+        val order = orderRepository.findByDeliveryId(delivery.id)
+        // for each order, map it to OrderedDTO
+        return order.map {
+            OrderedDTO(
+                it.userAddress,
+                it.status.state.stateName,
+            )
         }
     }
 
