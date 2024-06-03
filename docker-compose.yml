@@ -4,13 +4,13 @@ services:
   postgres:
     image: postgres:16
     ports:
-      - "5432:5432"
+      - "5433:5433"
     env_file:
       - .env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - deliveryapi_postgres_data:/var/lib/postgresql/data
 
-  app:
+  deliveryapi:
     image: deliveryapi
     container_name: deliveryapi
     build:
@@ -24,4 +24,4 @@ services:
       - .env
 
 volumes:
-  postgres_data:
+  deliveryapi_postgres_data:
