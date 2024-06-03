@@ -10,7 +10,7 @@ class ControlTowerServiceImpl(
     @Autowired private val webClient: WebClient,
 ) {
     fun notifyDelivery(orderId: Long): Mono<String> {
-        val url = "http://localhost:8080/delivery/picked?orderId=$orderId"
+        val url = "http://controltowerpt:8080/delivery/picked?orderId=$orderId"
 
         return webClient.put()
             .uri(url)
@@ -22,7 +22,7 @@ class ControlTowerServiceImpl(
     }
 
     fun notifyIncident(orderId: Long): Mono<String> {
-        val url = "http://localhost:8080/delivery/failed?orderId=$orderId"
+        val url = "http://controltowerpt:8080/delivery/failed?orderId=$orderId"
 
         return webClient.put()
             .uri(url)
