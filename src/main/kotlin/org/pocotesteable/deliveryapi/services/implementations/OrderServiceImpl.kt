@@ -14,7 +14,6 @@ import org.pocotesteable.deliveryapi.repositories.StatusRepository
 import org.pocotesteable.deliveryapi.services.interfaces.OrderService
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
-import reactor.core.scheduler.Schedulers
 
 @Service
 class OrderServiceImpl(
@@ -102,7 +101,7 @@ class OrderServiceImpl(
                     Mono.error(Exception("Error al notificar al Control Tower."))
                 }
             }
-        }
+    }
 
     override fun getOrderByDelivery(deliveryId: Long): List<OrderedDTO> {
         val delivery = deliveryRepository.findById(deliveryId).orElseThrow { Exception("Delivery not found") }
