@@ -84,15 +84,23 @@ class OrderServiceImpl(
             }
     }
 
-    override fun completeOrder(orderId: Long) {
-        updateOrderStatus(orderId, StatusDTO("DELIVERED", "Tu orden ya fue entregada."))
-
-        val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
-        val delivery = order.delivery
-        if (delivery != null) {
-            delivery.isAvailable = true
-            deliveryRepository.save(delivery)
-        }
+    override fun completeOrder(orderId: Long): Mono<Any> {
+        return controlTowerServiceImpl.notifyComplete(orderId)
+            .doOnError { e -> println("Error: ${e.message}") }
+            .flatMap { success ->
+                if (success == "success") {
+                    updateOrderStatus(orderId, StatusDTO("DELIVERED", "Tu orden ya fue entregada."))
+                    val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
+                    val delivery = order.delivery
+                    if (delivery != null) {
+                        delivery.isAvailable = true
+                        deliveryRepository.save(delivery)
+                    }
+                    Mono.just(true)
+                } else {
+                    Mono.error(Exception("Error al notificar al Control Tower."))
+                }
+            }
     }
 
     override fun getOrderByDelivery(deliveryId: Long): List<OrderedDTO> {

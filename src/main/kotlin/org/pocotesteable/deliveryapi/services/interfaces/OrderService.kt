@@ -14,7 +14,7 @@ interface OrderService {
 
     fun haveIncident(orderId: Long): Mono<Any>
 
-    fun completeOrder(orderId: Long) {}
+    fun completeOrder(orderId: Long): Mono<Any>
 
     fun getOrderByDelivery(deliveryId: Long): List<OrderedDTO>
 }
