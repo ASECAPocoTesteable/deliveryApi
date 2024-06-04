@@ -42,12 +42,12 @@ class OrderController(private val orderService: OrderService) {
     }
 
     @PostMapping("/order/{orderId}/complete")
-    fun completeOrder(@PathVariable("orderId") orderId: Long): ResponseEntity<Any> {
-        return try {
-            ResponseEntity.ok().body(orderService.completeOrder(orderId))
-        } catch (e: Exception) {
-            ResponseEntity.badRequest().body("Error: ${e.message}")
-        }
+    fun completeOrder(@PathVariable("orderId") orderId: Long): Mono<ResponseEntity<Any>> {
+        return orderService.completeOrder(orderId)
+            .map { ResponseEntity.ok().body(it) }
+            .onErrorResume { e ->
+                Mono.just(ResponseEntity.badRequest().body("Error: ${e.message}"))
+            }
     }
 
     @GetMapping("/order/{deliveryId}")
