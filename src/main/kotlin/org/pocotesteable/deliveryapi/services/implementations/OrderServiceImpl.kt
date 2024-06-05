@@ -14,6 +14,7 @@ import org.pocotesteable.deliveryapi.repositories.StatusRepository
 import org.pocotesteable.deliveryapi.services.interfaces.OrderService
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 @Service
 class OrderServiceImpl(
@@ -90,13 +91,20 @@ class OrderServiceImpl(
             .flatMap { success ->
                 if (success == "success") {
                     updateOrderStatus(orderId, StatusDTO("DELIVERED", "Tu orden ya fue entregada."))
-                    val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
-                    val delivery = order.delivery
-                    if (delivery != null) {
-                        delivery.isAvailable = true
-                        deliveryRepository.save(delivery)
+
+                    Mono.defer {
+                        Mono.fromCallable {
+                            val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
+                            val delivery = order.delivery
+                            if (delivery != null) {
+                                delivery.isAvailable = true
+                                deliveryRepository.save(delivery)
+                            }
+                            order
+                        }
+                            .subscribeOn(Schedulers.boundedElastic())
+                            .flatMap { Mono.just(true) }
                     }
-                    Mono.just(true)
                 } else {
                     Mono.error(Exception("Error al notificar al Control Tower."))
                 }
