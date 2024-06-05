@@ -119,6 +119,7 @@ class OrderServiceImpl(
         // for each order, map it to OrderedDTO
         return order.map {
             OrderedDTO(
+                it.id,
                 it.userAddress,
                 it.status.state.toString(),
                 it.id,
