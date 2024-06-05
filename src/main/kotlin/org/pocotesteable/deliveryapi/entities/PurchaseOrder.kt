@@ -12,6 +12,8 @@ class PurchaseOrder(
     @OneToOne
     var status: Status,
 
+    var warehouseDirection: String,
+
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -40,6 +40,7 @@ class OrderServiceImpl(
             userAddress = payload.userAddress,
             status = status,
             delivery = delivery,
+            warehouseDirection = payload.warehouseDirection,
         )
         orderRepository.save(order)
 
