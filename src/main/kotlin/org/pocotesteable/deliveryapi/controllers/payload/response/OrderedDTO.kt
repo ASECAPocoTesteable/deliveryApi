@@ -4,6 +4,12 @@ data class OrderedDTO(
     val id: Long,
     val userAddress: String,
     val status: String,
-    val orderId: Long,
     val warehouseDirection: String,
+    val products: List<ProductDTO>,
+)
+
+data class ProductDTO(
+    val id: Long,
+    val name: String,
+    val quantity: Int,
 )

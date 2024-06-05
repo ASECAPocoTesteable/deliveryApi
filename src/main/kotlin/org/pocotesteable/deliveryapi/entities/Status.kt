@@ -4,7 +4,7 @@ import jakarta.persistence.*
 import org.pocotesteable.deliveryapi.enums.State
 
 @Entity
-data class Status(
+class Status(
     var state: State,
 
     var description: String,

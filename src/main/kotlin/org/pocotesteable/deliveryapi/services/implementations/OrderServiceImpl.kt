@@ -3,6 +3,7 @@ package org.pocotesteable.deliveryapi.services.implementations
 import org.pocotesteable.deliveryapi.controllers.payload.request.OrderDTO
 import org.pocotesteable.deliveryapi.controllers.payload.request.StatusDTO
 import org.pocotesteable.deliveryapi.controllers.payload.response.OrderedDTO
+import org.pocotesteable.deliveryapi.controllers.payload.response.ProductDTO
 import org.pocotesteable.deliveryapi.entities.Product
 import org.pocotesteable.deliveryapi.entities.PurchaseOrder
 import org.pocotesteable.deliveryapi.entities.Status
@@ -122,10 +123,19 @@ class OrderServiceImpl(
                 it.id,
                 it.userAddress,
                 it.status.state.toString(),
-                it.id,
                 it.warehouseDirection,
+                getProductOrderByOrderId(it.id),
             )
         }
+    }
+
+    fun getProductOrderByOrderId(orderId: Long): List<ProductDTO> {
+        val purchaseOrder = productRepository.findAllByPurchaseOrderId(orderId)
+        return purchaseOrder.map { productToProductDTO(it) }
+    }
+
+    private fun productToProductDTO(product: Product): ProductDTO {
+        return ProductDTO(product.id, product.name, product.quantity)
     }
 
     private fun verifyStatusChange(orderStatus: Status, status: State) {

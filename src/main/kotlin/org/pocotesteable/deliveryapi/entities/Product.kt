@@ -3,7 +3,7 @@ package org.pocotesteable.deliveryapi.entities
 import jakarta.persistence.*
 
 @Entity
-data class Product(
+class Product(
     var name: String,
     var quantity: Int,
     @ManyToOne

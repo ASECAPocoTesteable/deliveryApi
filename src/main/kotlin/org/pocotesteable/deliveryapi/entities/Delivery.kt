@@ -3,7 +3,7 @@ package org.pocotesteable.deliveryapi.entities
 import jakarta.persistence.*
 
 @Entity
-data class Delivery(
+class Delivery(
     var isAvailable: Boolean,
 ) {
     @Id
