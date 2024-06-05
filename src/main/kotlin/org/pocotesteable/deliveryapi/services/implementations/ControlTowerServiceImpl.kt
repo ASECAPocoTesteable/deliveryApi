@@ -10,41 +10,38 @@ class ControlTowerServiceImpl(
     @Autowired private val webClient: WebClient,
 ) {
     fun notifyDelivery(orderId: Long): Mono<String> {
-//        val url = "http://controltowerpt:8080/delivery/picked?orderId=$orderId"
-//
-//        return webClient.put()
-//            .uri(url)
-//            .retrieve()
-//            .bodyToMono(String::class.java)
-//            .onErrorResume { throwable ->
-//                Mono.error(Exception("Failed to notify picked: ${throwable.message}", throwable))
-//            }
-        return Mono.just("")
+        val url = "http://controltowerpt:8080/delivery/picked?orderId=$orderId"
+
+        return webClient.put()
+            .uri(url)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .onErrorResume { throwable ->
+                Mono.error(Exception("Failed to notify picked: ${throwable.message}", throwable))
+            }
     }
 
     fun notifyIncident(orderId: Long): Mono<String> {
-//        val url = "http://controltowerpt:8080/delivery/failed?orderId=$orderId"
-//
-//        return webClient.put()
-//            .uri(url)
-//            .retrieve()
-//            .bodyToMono(String::class.java)
-//            .onErrorResume { throwable ->
-//                Mono.error(Exception("Failed to notify incident: ${throwable.message}", throwable))
-//            }
-        return Mono.just("success")
+        val url = "http://controltowerpt:8080/delivery/failed?orderId=$orderId"
+
+        return webClient.put()
+            .uri(url)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .onErrorResume { throwable ->
+                Mono.error(Exception("Failed to notify incident: ${throwable.message}", throwable))
+            }
     }
 
     fun notifyComplete(orderId: Long): Mono<String> {
-//        val url = "http://controltowerpt:8080/delivery/completed?orderId=$orderId"
-//
-//        return webClient.put()
-//            .uri(url)
-//            .retrieve()
-//            .bodyToMono(String::class.java)
-//            .onErrorResume { throwable ->
-//                Mono.error(Exception("Failed to notify complete: ${throwable.message}", throwable))
-//            }
-        return Mono.just("success")
+        val url = "http://controltowerpt:8080/delivery/completed?orderId=$orderId"
+
+        return webClient.put()
+            .uri(url)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .onErrorResume { throwable ->
+                Mono.error(Exception("Failed to notify complete: ${throwable.message}", throwable))
+            }
     }
 }
