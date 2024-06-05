@@ -17,7 +17,8 @@ class OrderController(private val orderService: OrderService) {
     @PostMapping("/order")
     fun startOrder(@Valid @RequestBody payload: OrderDTO): ResponseEntity<Any> {
         return try {
-            ResponseEntity.ok().body(orderService.startOrder(payload))
+            orderService.startOrder(payload)
+            ResponseEntity.ok().body(true)
         } catch (e: Exception) {
             ResponseEntity.badRequest().body("Error: ${e.message}")
         }

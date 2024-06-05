@@ -40,6 +40,7 @@ class OrderServiceImpl(
             userAddress = payload.userAddress,
             status = status,
             delivery = delivery,
+            warehouseDirection = payload.warehouseDirection,
         )
         orderRepository.save(order)
 
@@ -62,8 +63,9 @@ class OrderServiceImpl(
 
     override fun takeOrder(orderId: Long): Mono<Any> {
         return controlTowerServiceImpl.notifyDelivery(orderId)
+            .doOnError { e -> println("Error: ${e.message}") }
             .flatMap { success ->
-                if (success.isEmpty()) {
+                if (success == "success") {
                     updateOrderStatus(orderId, StatusDTO("INPROGRESS", "Tu orden esta en progreso de entrega."))
                     Mono.just(true)
                 } else {
