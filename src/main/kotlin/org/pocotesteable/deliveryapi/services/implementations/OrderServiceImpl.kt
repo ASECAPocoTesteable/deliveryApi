@@ -120,7 +120,9 @@ class OrderServiceImpl(
         return order.map {
             OrderedDTO(
                 it.userAddress,
-                it.status.state.stateName,
+                it.status.state.toString(),
+                it.id,
+                it.warehouseDirection,
             )
         }
     }
