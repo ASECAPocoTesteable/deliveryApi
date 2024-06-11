@@ -9,10 +9,13 @@ class PurchaseOrder(
 
     var userAddress: String,
 
-    @OneToOne
+    @OneToOne(cascade = [CascadeType.ALL])
     var status: Status,
 
     var warehouseDirection: String,
+
+    @OneToMany(mappedBy = "purchaseOrder", cascade = [CascadeType.ALL])
+    var products: List<Product> = emptyList(),
 
 ) {
     @Id

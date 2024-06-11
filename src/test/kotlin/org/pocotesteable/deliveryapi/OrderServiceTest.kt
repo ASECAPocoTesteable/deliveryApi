@@ -149,6 +149,7 @@ class OrderServiceTest {
             userAddress = "123 Main St",
             status = Status(State.ASSIGNED, "Assigned"),
             warehouseDirection = "Warehouse A",
+            products = mutableListOf(),
         ).apply { id = 1L }
 
         val product = Product(
@@ -157,8 +158,9 @@ class OrderServiceTest {
             purchaseOrder = order,
         ).apply { id = 1L }
 
+        order.apply { products = mutableListOf(product) }
+
         whenever(orderRepository.findAll()).thenReturn(listOf(order))
-        whenever(productRepository.findAllByPurchaseOrderId(order.id)).thenReturn(listOf(product))
 
         // Act
         val result = orderServiceImpl.getAllOrders()
@@ -179,7 +181,6 @@ class OrderServiceTest {
         assertEquals(product.quantity, productDTO.quantity)
 
         verify(orderRepository).findAll()
-        verify(productRepository).findAllByPurchaseOrderId(order.id)
     }
 
     @Test

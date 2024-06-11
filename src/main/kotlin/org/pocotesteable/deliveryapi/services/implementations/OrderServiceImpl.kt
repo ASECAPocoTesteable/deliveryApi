@@ -131,13 +131,13 @@ class OrderServiceImpl(
 
     override fun getAllOrders(): List<OrderedDTO> {
         val orders = orderRepository.findAll()
-        return orders.map {
+        return orders.map { order ->
             OrderedDTO(
-                it.id,
-                it.userAddress,
-                it.status.state.toString(),
-                it.warehouseDirection,
-                getProductOrderByOrderId(it.id),
+                order.id,
+                order.userAddress,
+                order.status.state.toString(),
+                order.warehouseDirection,
+                order.products.map { productToProductDTO(it) },
             )
         }
     }
