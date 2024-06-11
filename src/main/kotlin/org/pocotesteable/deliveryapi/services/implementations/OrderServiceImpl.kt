@@ -147,7 +147,7 @@ class OrderServiceImpl(
         orderRepository.delete(order)
     }
 
-    private fun getProductOrderByOrderId(orderId: Long): List<ProductDTO> {
+    fun getProductOrderByOrderId(orderId: Long): List<ProductDTO> {
         val purchaseOrder = productRepository.findAllByPurchaseOrderId(orderId)
         return purchaseOrder.map { productToProductDTO(it) }
     }
