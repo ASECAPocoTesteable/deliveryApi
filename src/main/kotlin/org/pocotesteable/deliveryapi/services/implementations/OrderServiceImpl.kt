@@ -129,6 +129,24 @@ class OrderServiceImpl(
         }
     }
 
+    override fun getAllOrders(): List<OrderedDTO> {
+        val orders = orderRepository.findAll()
+        return orders.map {
+            OrderedDTO(
+                it.id,
+                it.userAddress,
+                it.status.state.toString(),
+                it.warehouseDirection,
+                getProductOrderByOrderId(it.id),
+            )
+        }
+    }
+
+    override fun deleteOrder(orderId: Long) {
+        val order = orderRepository.findById(orderId).orElseThrow { Exception("Order not found") }
+        orderRepository.delete(order)
+    }
+
     fun getProductOrderByOrderId(orderId: Long): List<ProductDTO> {
         val purchaseOrder = productRepository.findAllByPurchaseOrderId(orderId)
         return purchaseOrder.map { productToProductDTO(it) }

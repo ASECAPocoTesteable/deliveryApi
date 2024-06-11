@@ -17,4 +17,8 @@ interface OrderService {
     fun completeOrder(orderId: Long): Mono<Any>
 
     fun getOrderByDelivery(deliveryId: Long): List<OrderedDTO>
+
+    fun getAllOrders(): List<OrderedDTO>
+
+    fun deleteOrder(orderId: Long)
 }

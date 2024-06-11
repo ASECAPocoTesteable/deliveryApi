@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -141,5 +140,64 @@ class OrderServiceTest {
         assertEquals(product.quantity, productDTO.quantity)
 
         verify(productRepository).findAllByPurchaseOrderId(orderId)
+    }
+
+    @Test
+    fun `test getAllOrders`() {
+        // Arrange
+        val order = PurchaseOrder(
+            userAddress = "123 Main St",
+            status = Status(State.ASSIGNED, "Assigned"),
+            warehouseDirection = "Warehouse A",
+        ).apply { id = 1L }
+
+        val product = Product(
+            name = "Product A",
+            quantity = 10,
+            purchaseOrder = order,
+        ).apply { id = 1L }
+
+        whenever(orderRepository.findAll()).thenReturn(listOf(order))
+        whenever(productRepository.findAllByPurchaseOrderId(order.id)).thenReturn(listOf(product))
+
+        // Act
+        val result = orderServiceImpl.getAllOrders()
+
+        // Assert
+        assertEquals(1, result.size)
+        val orderedDTO = result[0]
+        assertEquals(order.id, orderedDTO.id)
+        assertEquals(order.userAddress, orderedDTO.userAddress)
+        assertEquals(order.status.state.toString(), orderedDTO.status)
+        assertEquals(order.warehouseDirection, orderedDTO.warehouseDirection)
+
+        val productDTOs = orderedDTO.products
+        assertEquals(1, productDTOs.size)
+        val productDTO = productDTOs[0]
+        assertEquals(product.id, productDTO.id)
+        assertEquals(product.name, productDTO.name)
+        assertEquals(product.quantity, productDTO.quantity)
+
+        verify(orderRepository).findAll()
+        verify(productRepository).findAllByPurchaseOrderId(order.id)
+    }
+
+    @Test
+    fun `test deleteOrder`() {
+        // Arrange
+        val orderId = 1L
+        val order = PurchaseOrder(
+            userAddress = "123 Main St",
+            status = Status(State.ASSIGNED, "Assigned"),
+            warehouseDirection = "Warehouse A",
+        ).apply { id = orderId }
+
+        whenever(orderRepository.findById(orderId)).thenReturn(Optional.of(order))
+
+        // Act
+        orderServiceImpl.deleteOrder(orderId)
+
+        // Assert
+        verify(orderRepository).delete(order)
     }
 }

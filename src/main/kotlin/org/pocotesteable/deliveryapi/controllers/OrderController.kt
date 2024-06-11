@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import org.pocotesteable.deliveryapi.controllers.payload.request.OrderDTO
 import org.pocotesteable.deliveryapi.services.interfaces.OrderService
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -55,6 +56,25 @@ class OrderController(private val orderService: OrderService) {
     fun getOrderByDelivery(@PathVariable("deliveryId") deliveryId: Long): ResponseEntity<Any> {
         return try {
             ResponseEntity.ok().body(orderService.getOrderByDelivery(deliveryId))
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body("Error: ${e.message}")
+        }
+    }
+
+    @GetMapping("/order/all")
+    fun getAllOrders(): ResponseEntity<Any> {
+        return try {
+            ResponseEntity.ok().body(orderService.getAllOrders())
+        } catch (e: Exception) {
+            ResponseEntity.badRequest().body("Error: ${e.message}")
+        }
+    }
+
+    @DeleteMapping("/order/{orderId}")
+    fun deleteOrder(@PathVariable("orderId") orderId: Long): ResponseEntity<Any> {
+        return try {
+            orderService.deleteOrder(orderId)
+            ResponseEntity.ok().body(true)
         } catch (e: Exception) {
             ResponseEntity.badRequest().body("Error: ${e.message}")
         }
