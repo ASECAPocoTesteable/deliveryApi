@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.9.23"
     kotlin("plugin.spring") version "1.9.23"
     kotlin("plugin.jpa") version "1.9.23"
+    id("jacoco")
 }
 
 group = "org.pocotesteable"
@@ -18,6 +19,21 @@ java {
 
 repositories {
     mavenCentral()
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+    finalizedBy("jacocoTestReport")
+}
+
+tasks.named<JacocoReport>("jacocoTestReport") {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
 
 publishing {
@@ -32,8 +48,8 @@ publishing {
         }
     }
     publications {
-        create<MavenPublication>("gpr") { // Create a Maven publication named "gpr"
-            from(components["java"]) // Include the Java component in the publication
+        create<MavenPublication>("gpr") {
+            from(components["java"])
         }
     }
 }
@@ -50,23 +66,19 @@ dependencies {
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-swagger-ui:3.0.0")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    dependencies {
-        ktlint("com.pinterest:ktlint:0.49.0") {
-            attributes {
-                attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
-            }
+    ktlint("com.pinterest:ktlint:0.49.0") {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
         }
-        // ktlint(project(":custom-ktlint-ruleset")) // in case of custom ruleset
     }
     annotationProcessor("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.h2database:h2")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0") // or a more recent version
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.9.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
@@ -80,16 +92,11 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
-
 val ktlintCheck by tasks.registering(JavaExec::class) {
     group = LifecycleBasePlugin.VERIFICATION_GROUP
     description = "Check Kotlin code style"
     classpath = ktlint
     mainClass.set("com.pinterest.ktlint.Main")
-    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
     args(
         "**/src/**/*.kt",
         "**.kts",
@@ -107,7 +114,6 @@ tasks.register<JavaExec>("ktlintFormat") {
     classpath = ktlint
     mainClass.set("com.pinterest.ktlint.Main")
     jvmArgs("--add-opens=java.base/java.lang=ALL-UNNAMED")
-    // see https://pinterest.github.io/ktlint/install/cli/#command-line-usage for more information
     args(
         "-F",
         "**/src/**/*.kt",
